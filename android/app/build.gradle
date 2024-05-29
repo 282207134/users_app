@@ -1,0 +1,66 @@
+plugins {
+    id "com.android.application"  // 应用 Android 插件，用于 Android 应用开发。
+    id "kotlin-android"           // 应用 Kotlin 插件，用于支持 Kotlin 语言。
+    id "dev.flutter.flutter-gradle-plugin" // 应用 Flutter Gradle 插件，用于整合 Flutter。
+}
+
+def localProperties = new Properties() // 创建一个 Properties 对象，用于加载和存储配置信息。
+def localPropertiesFile = rootProject.file('local.properties') // 定义本地属性文件的位置。
+if (localPropertiesFile.exists()) { // 检查 local.properties 文件是否存在。
+    localPropertiesFile.withReader('UTF-8') { reader -> // 如果存在，使用 UTF-8 编码格式读取文件。
+        localProperties.load(reader) // 加载文件内容到 localProperties 对象。
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode') // 从属性文件获取 Flutter 版本号。
+if (flutterVersionCode == null) { // 如果没有获取到版本号，
+    flutterVersionCode = '1'      // 则默认设置版本号为 1。
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName') // 从属性文件获取 Flutter 版本名。
+if (flutterVersionName == null) { // 如果没有获取到版本名，
+    flutterVersionName = '1.0'     // 则默认设置版本名为 1.0。
+}
+
+android {
+    namespace "com.example.users_app" // 设置 Android 应用的命名空间。
+    compileSdkVersion flutter.compileSdkVersion // 设置编译所使用的 SDK 版本，取自 Flutter 配置。
+    ndkVersion flutter.ndkVersion // 设置使用的 NDK 版本，取自 Flutter 配置。
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8 // 设置 Java 源代码兼容性为 Java 8。
+        targetCompatibility JavaVersion.VERSION_1_8 // 设置目标代码兼容性为 Java 8。
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8' // 设置 Kotlin 的 JVM 目标版本为 1.8。
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin' // 添加 Kotlin 源代码目录。
+    }
+
+    defaultConfig {
+        applicationId "com.example.users_app" // 设置 Android 应用的唯一标识 ID。
+        minSdkVersion 24 // 设置最小支持的 Android SDK 版本。默认为自适应flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion // 设置目标 Android SDK 版本，取自 Flutter 配置。
+        versionCode flutterVersionCode.toInteger() // 设置应用版本代码，将字符串转换为整数。
+        versionName flutterVersionName // 设置应用版本名。
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // 使用调试签名配置，以便可以执行 `flutter run --release`。
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source '../..' // 设置 Flutter 模块的源代码目录相对路径。
+}
+
+dependencies {} // 定义项目依赖，当前为空。
+
+apply plugin: "com.google.gms.google-services" // 应用 Google Services 插件，用于集成如 Firebase 等 Google 服务。
